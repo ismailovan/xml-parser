@@ -17,6 +17,7 @@ namespace Repository
         }
 
         public void CreateMetData(MetData metData) => Create(metData);
+
         public IEnumerable<MetData> GetAllData(bool trackChanges) =>
              FindAll(trackChanges)
              .OrderBy(c => c.domain_meteosiId)
@@ -24,5 +25,7 @@ namespace Repository
 
         public MetData GetData(Guid companyId, bool trackChanges) => FindByCondition(c => c.Id.Equals(companyId), trackChanges).SingleOrDefault();
 
+        public void CreateBulk(List<MetData> metData) => CreatBulk(metData);
+        
     }
 }

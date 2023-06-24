@@ -15,6 +15,8 @@ namespace Contracts
         MetData GetData(Guid Id, bool trackChanges);
         IEnumerable<MetData> GetAllData( bool trackChanges);
 
+        void CreateBulk(List<MetData> metData);
+
 
     }
 }

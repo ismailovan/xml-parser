@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,9 @@ namespace Repository
         private RepositoryContext _repositoryContext;
         private IMetDataRepository _metDataRepository;
 
-        public RepositoryManager(RepositoryContext repositoryContext)
+        public RepositoryManager(IServiceProvider serviceProvider)
         {
-            _repositoryContext = repositoryContext;
+            _repositoryContext = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<RepositoryContext>();
         }
         public IMetDataRepository MetData
         {

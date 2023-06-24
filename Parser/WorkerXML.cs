@@ -1,14 +1,14 @@
-using Contracts;
-using WorkerXML.Services;
+﻿using Contracts;
 
-namespace WorkerXML
+
+namespace Parser
 {
-    public class Worker : BackgroundService
+    public class WorkerXML : BackgroundService
     {
         private readonly ILoggerManager _logger;
         private readonly MetDataService _userService;
 
-        public Worker(ILoggerManager logger, MetDataService userService)
+        public WorkerXML(ILoggerManager logger, MetDataService userService)
         {
             _logger = logger;
             _userService = userService;
@@ -18,7 +18,7 @@ namespace WorkerXML
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInfo($"Worker running at: { DateTimeOffset.Now}");
+                _logger.LogInfo($"Worker running at: {DateTimeOffset.Now}");
 
                 var result = await _userService.ExecuteService(stoppingToken);
 
@@ -28,7 +28,7 @@ namespace WorkerXML
 
                 _logger.LogInfo("Stoping service...");
 
-                await Task.Delay(30000, stoppingToken);
+                await Task.Delay(60000, stoppingToken);
             }
         }
     }

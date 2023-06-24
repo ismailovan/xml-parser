@@ -23,12 +23,11 @@ namespace Parser.Extensions
 
         public static void ConfigureLoggerService(this IServiceCollection services) => services.AddTransient<ILoggerManager, LoggerManager>();
 
-        public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration) =>
- services.AddDbContext<RepositoryContext>();
+         public static void ConfigureSqlContext(this IServiceCollection services,
+        IConfiguration configuration) =>
+         services.AddDbContext<RepositoryContext>(opts =>
+         opts.UseSqlite(configuration.GetConnectionString("sqlConnection"), b => b.MigrationsAssembly("Task1")));
 
-        public static void ConfigureSqlContext(this IServiceCollection services, string conf) =>
- services.AddDbContext<RepositoryContext>(opts => opts.UseSqlite(conf, b =>
-b.MigrationsAssembly("Parser")), optionsLifetime: ServiceLifetime.Scoped);
 
         public static void ConfigureRepositoryManager(this IServiceCollection services) => services.AddTransient<IRepositoryManager, RepositoryManager>();
 

@@ -12,8 +12,13 @@ namespace Entities
 {
     public class RepositoryContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder options) =>
-        options.UseSqlite("DataSource = LocalDatabase.db;");
+
+
+        public RepositoryContext(DbContextOptions options)
+ : base(options)
+        {
+
+        }
 
         public DbSet<MetData> MetData { get; set; }
     }

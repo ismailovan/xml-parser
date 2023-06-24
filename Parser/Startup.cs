@@ -1,7 +1,10 @@
 ﻿//using Contracts;
+using Entities;
 using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
+using Parser;
 using Parser.Extensions;
+
 
 public class Startup
 {
@@ -19,9 +22,11 @@ public class Startup
         services.ConfigureIISIntegration();
         services.ConfigureLoggerService();
         services.ConfigureSqlContext(Configuration);
-       
+        services.AddTransient<RepositoryContext>();
+        services.AddHostedService<WorkerXML>();
         services.ConfigureRepositoryManager();
         services.AddAutoMapper(typeof(Startup));
+        services.AddTransient<MetDataService>();
         services.AddControllers(config =>
         {
             config.RespectBrowserAcceptHeader = true;

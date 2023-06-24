@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using Contracts;
 using Entities;
 using Entities.DataTransferObjects;
@@ -11,18 +11,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace WorkerXML.Services
+namespace Parser
 {
     public class MetDataService
     {
         private readonly ILoggerManager _logger;
-        private readonly RepositoryContext _context;
-        private readonly IMapper _mapper;
+        private readonly IRepositoryManager _repository;
+        
 
-        public MetDataService(ILoggerManager logger, RepositoryContext context, IMapper mapper)
+        public MetDataService(ILoggerManager logger, IRepositoryManager repository)
         {
             _logger = logger;
-            _context = context;
+            _repository = repository;
         }
 
         public virtual async Task<bool> ExecuteService(CancellationToken stoppingToken)
@@ -31,7 +31,7 @@ namespace WorkerXML.Services
 
             List<MetDataXml> data = new List<MetDataXml>();
             XmlDocument doc = new XmlDocument();
-            doc.Load("https://meteo.arso.gov.si/uploads/probase/www/observ/surface/text/sl/observationAms_si_latest.xml ");
+            doc.Load("https://meteo.arso.gov.si/uploads/probase/www/observ/surface/text/sl/observationAms_si_latest.xml");
 
             foreach (XmlNode node in doc.SelectNodes("/data/metData"))
             {
@@ -83,9 +83,9 @@ namespace WorkerXML.Services
 
 
                 }).ToList();
-
-                await _context.MetData.AddRangeAsync(newUsersEntity);
-                await _context.SaveChangesAsync();
+                
+                _repository.MetData.CreateBulk(newUsersEntity);
+                _repository.Save();
 
                 _logger.LogInfo("New users successfully saved");
                 return true;
@@ -93,6 +93,7 @@ namespace WorkerXML.Services
             catch (Exception ex)
             {
                 _logger.LogError($"Error saving new users - {ex.Message}");
+                Console.WriteLine(ex.ToString());
                 return false;
             }
         }
