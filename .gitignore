@@ -398,4 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 
 #Log
-.internal_logs
+internal_logs/
