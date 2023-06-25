@@ -8,7 +8,7 @@ namespace Parser.Controllers
 {
     
 
-    [Route("api/[controller]")]
+    [Route("api/metData")]
     [ApiController]
     public class MetDataController : ControllerBase
     {
@@ -29,7 +29,7 @@ namespace Parser.Controllers
             var companies = _repository.MetData.GetAllData(trackChanges: false);
             var companiesDto = _mapper.Map<IEnumerable<MetDataDTO>>(companies);
 
-
+            
             return Ok(companiesDto);
 
 

@@ -35,7 +35,7 @@ namespace Parser
 
             foreach (XmlNode node in doc.SelectNodes("/data/metData"))
             {
-                //var x = string.Join(" ", node["sunrise"].InnerText.Split().ToList().Take(2));
+                
                 data.Add(new MetDataXml
                 {
                     domain_title = node["domain_title"].InnerText,
@@ -48,12 +48,6 @@ namespace Parser
                 });
             }
 
-
-
-            
-
-
-
             var result = await EqualizeUsers(data);
             _logger.LogInfo("Ending process of parsing XML");
 
@@ -62,19 +56,19 @@ namespace Parser
         public virtual async Task<bool> EqualizeUsers(List<MetDataXml> xmlData)
         {
 
-            //TO-DO check if metData already exists
+            //all existed data
             var md = _repository.MetData.GetAllData(trackChanges: false);
-            var first = xmlData.Distinct().ElementAt(0);
-            var isExists = md.FirstOrDefault(s => s.domain_title == first.domain_title && s.tsUpdated_RFC822 == first.tsUpdated_RFC822);
-            if (isExists == null)
-            {
-                _logger.LogInfo($"Found {xmlData.Count} new meta data");
-                return await SaveNewData(xmlData);
-            }
-            else
+            //take only new data to database
+            var newMetData = xmlData.Where(x => !md.Any(x1 => x1.domain_title != x.domain_title && x1.tsUpdated_RFC822 != x.tsUpdated_RFC822)).ToList();
+            if (!newMetData.Any())
             {
                 _logger.LogInfo($"No any new meta data");
                 return false;
+            }
+            else
+            {
+                _logger.LogInfo($"Found {newMetData.Count} new meta data");
+                return await SaveNewData(newMetData);
             }
             
         }

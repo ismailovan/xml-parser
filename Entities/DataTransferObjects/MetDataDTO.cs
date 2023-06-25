@@ -13,8 +13,8 @@ namespace Entities.DataTransferObjects
         public string domain_shortTitle { get; set; }
         public string domain_longTitle { get; set; }
         public string domain_meteosiId { get; set; }
-        public string sunrise { get; set; } // timestamp
-        public string sunset { get; set; } // timestamp
+        public string sunrise { get; set; } 
+        public string sunset { get; set; } 
         public string tsUpdated_RFC822 { get; set; }
     }
 }

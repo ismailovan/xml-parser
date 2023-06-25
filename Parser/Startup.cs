@@ -1,6 +1,8 @@
 ﻿//using Contracts;
+using Contracts;
 using Entities;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Logging;
 using NLog;
 using Parser;
 using Parser.Extensions;
@@ -35,7 +37,7 @@ public class Startup
 
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
     {
         if (env.IsDevelopment())
         {
@@ -45,6 +47,7 @@ public class Startup
         {
             app.UseHsts();
         }
+        app.ConfigureExceptionHandler(logger);
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseCors("CorsPolicy");
@@ -58,6 +61,7 @@ public class Startup
         {
             endpoints.MapControllers();
         });
+        
 
     }
 }
