@@ -8,10 +8,13 @@ namespace Entities.DataTransferObjects
 {
     public class MetDataDTO
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string domain_title { get; set; }
         public string domain_shortTitle { get; set; }
         public string domain_longTitle { get; set; }
         public string domain_meteosiId { get; set; }
+        public string sunrise { get; set; } // timestamp
+        public string sunset { get; set; } // timestamp
+        public string tsUpdated_RFC822 { get; set; }
     }
 }

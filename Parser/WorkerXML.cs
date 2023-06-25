@@ -28,7 +28,7 @@ namespace Parser
 
                 _logger.LogInfo("Stoping service...");
 
-                await Task.Delay(60000, stoppingToken);
+                await Task.Delay(3600000 * 4, stoppingToken);
             }
         }
     }

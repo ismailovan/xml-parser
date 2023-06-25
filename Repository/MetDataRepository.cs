@@ -23,7 +23,7 @@ namespace Repository
              .OrderBy(c => c.domain_meteosiId)
              .ToList();
 
-        public MetData GetData(Guid companyId, bool trackChanges) => FindByCondition(c => c.Id.Equals(companyId), trackChanges).SingleOrDefault();
+        public MetData GetData(string title, bool trackChanges) => FindByCondition(c => (c.domain_meteosiId.Contains(title.ToUpper().Substring(0, 3))), trackChanges).OrderBy(q => q.Id).Last();
 
         public void CreateBulk(List<MetData> metData) => CreatBulk(metData);
         

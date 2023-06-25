@@ -35,36 +35,48 @@ namespace Parser
 
             foreach (XmlNode node in doc.SelectNodes("/data/metData"))
             {
-
+                //var x = string.Join(" ", node["sunrise"].InnerText.Split().ToList().Take(2));
                 data.Add(new MetDataXml
                 {
                     domain_title = node["domain_title"].InnerText,
                     domain_shortTitle = node["domain_shortTitle"].InnerText,
                     domain_longTitle = node["domain_longTitle"].InnerText,
                     domain_meteosiId = node["domain_meteosiId"].InnerText,
+                    sunrise = node["sunrise"].InnerText,
+                    sunset = node["sunset"].InnerText,
+                    tsUpdated_RFC822 = node["tsUpdated_RFC822"].InnerText,
                 });
             }
 
 
 
-            _logger.LogInfo("Ending process");
+            
 
 
 
             var result = await EqualizeUsers(data);
-
+            _logger.LogInfo("Ending process of parsing XML");
 
             return result;
         }
         public virtual async Task<bool> EqualizeUsers(List<MetDataXml> xmlData)
         {
-            
+
             //TO-DO check if metData already exists
-
-
-            _logger.LogInfo($"Found {xmlData.Count} new meta data");
-
-            return await SaveNewData(xmlData);
+            var md = _repository.MetData.GetAllData(trackChanges: false);
+            var first = xmlData.Distinct().ElementAt(0);
+            var isExists = md.FirstOrDefault(s => s.domain_title == first.domain_title && s.tsUpdated_RFC822 == first.tsUpdated_RFC822);
+            if (isExists == null)
+            {
+                _logger.LogInfo($"Found {xmlData.Count} new meta data");
+                return await SaveNewData(xmlData);
+            }
+            else
+            {
+                _logger.LogInfo($"No any new meta data");
+                return false;
+            }
+            
         }
 
         public virtual async Task<bool> SaveNewData(List<MetDataXml> newData)
@@ -80,6 +92,9 @@ namespace Parser
                     domain_meteosiId = x.domain_meteosiId,
                     domain_longTitle = x.domain_longTitle,
                     domain_shortTitle = x.domain_shortTitle,
+                    sunset = x.sunset,
+                    sunrise = x.sunrise,
+                    tsUpdated_RFC822 = x.tsUpdated_RFC822
 
 
                 }).ToList();

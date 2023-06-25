@@ -26,7 +26,7 @@ namespace Parser.Extensions
          public static void ConfigureSqlContext(this IServiceCollection services,
         IConfiguration configuration) =>
          services.AddDbContext<RepositoryContext>(opts =>
-         opts.UseSqlite(configuration.GetConnectionString("sqlConnection"), b => b.MigrationsAssembly("Task1")));
+         opts.UseSqlite(configuration.GetConnectionString("sqlConnection"), b => b.MigrationsAssembly("Parser")));
 
 
         public static void ConfigureRepositoryManager(this IServiceCollection services) => services.AddTransient<IRepositoryManager, RepositoryManager>();

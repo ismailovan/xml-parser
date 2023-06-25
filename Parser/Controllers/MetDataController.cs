@@ -23,7 +23,7 @@ namespace Parser.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public IActionResult GetCompanies()
+        public IActionResult GetAllMetData()
         {
 
             var companies = _repository.MetData.GetAllData(trackChanges: false);
@@ -35,13 +35,13 @@ namespace Parser.Controllers
 
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetCompany(Guid id)
+        [HttpGet("{title}")]
+        public IActionResult GetMetData(string title)
         {
-            var company = _repository.MetData.GetData(id, trackChanges: false);
+            var company = _repository.MetData.GetData(title, trackChanges: false);
             if (company == null)
             {
-                _logger.LogInfo($"Company with id: {id} doesn't exist in the database.");
+                _logger.LogInfo($"Company with id: {title} doesn't exist in the database.");
                 return NotFound();
             }
             else

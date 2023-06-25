@@ -12,7 +12,7 @@ namespace Contracts
     public interface IMetDataRepository 
     {
         void CreateMetData(Entities.Models.MetData metData);
-        MetData GetData(Guid Id, bool trackChanges);
+        MetData GetData(string title, bool trackChanges);
         IEnumerable<MetData> GetAllData( bool trackChanges);
 
         void CreateBulk(List<MetData> metData);
