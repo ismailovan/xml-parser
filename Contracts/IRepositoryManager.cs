@@ -9,7 +9,7 @@ namespace Contracts
     public interface IRepositoryManager
     {
         IMetDataRepository MetData { get; }
+        Task SaveAsync();
         
-        void Save();
     }
 }

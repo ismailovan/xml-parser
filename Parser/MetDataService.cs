@@ -4,13 +4,14 @@ using Entities;
 using Entities.DataTransferObjects;
 using Entities.Models;
 using LoggerService;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-
+using System.Linq;
 namespace Parser
 {
     public class MetDataService
@@ -177,30 +178,30 @@ namespace Parser
         {
 
             //all existed data
-            var md = _repository.MetData.GetAllData(trackChanges: false);
+            var md = await _repository.MetData.GetAllMetDataAsync(trackChanges: false);
             //take only new data to database
-            var newMetData = xmlData.Where(x => !md.Any(x1 => x1.domain_title != x.domain_title && x1.tsUpdated_RFC822 != x.tsUpdated_RFC822)).ToList();
-            if (!newMetData.Any())
+             xmlData.RemoveAll(x => md.Any(y => y.domain_title == x.domain_title && y.tsUpdated_RFC822 == x.tsUpdated_RFC822));
+            if (!xmlData.Any())
             {
                 _logger.LogInfo($"No any new meta data");
                 return false;
             }
             else
             {
-                _logger.LogInfo($"Found {newMetData.Count} new meta data");
-                return await SaveNewData(newMetData);
+                _logger.LogInfo($"Found {xmlData.Count} new meta data");
+                return await SaveNewData(xmlData);
             }
-            
+
         }
 
-        public virtual async Task<bool> SaveNewData(List<MetDataXml> newData)
+public virtual async Task<bool> SaveNewData(List<MetDataXml> newData)
         {
             try
             {
                 _logger.LogInfo("Saving new users");
 
 
-                var newUsersEntity = newData.Select(x => new MetData
+                var newMetDataEntity = newData.Select(x => new MetData
                 {
                     domain_title = x.domain_title,
                     domain_meteosiId = x.domain_meteosiId,
@@ -331,8 +332,8 @@ namespace Parser
 
                 }).ToList();
                 
-                _repository.MetData.CreateBulk(newUsersEntity);
-                _repository.Save();
+                _repository.MetData.CreateBulk(newMetDataEntity);
+                await _repository.SaveAsync();
 
                 _logger.LogInfo("New users successfully saved");
                 return true;

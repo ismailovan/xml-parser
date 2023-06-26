@@ -11,10 +11,13 @@ namespace Contracts
 {
     public interface IMetDataRepository 
     {
-        void CreateMetData(Entities.Models.MetData metData);
-        MetData GetData(string title, bool trackChanges);
-        IEnumerable<MetData> GetAllData( bool trackChanges);
+        //void CreateMetData(MetData metData);
+        //MetData GetData(string title, bool trackChanges);
+        Task<MetData> GetMetDataAsync(int id, bool trackChanges);
 
+        //IEnumerable<MetData> GetAllData( bool trackChanges);
+        Task<IEnumerable<MetData>> GetAllMetDataAsync(bool trackChanges);
+       
         void CreateBulk(List<MetData> metData);
 
 

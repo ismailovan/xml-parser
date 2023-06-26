@@ -1,8 +1,10 @@
 ﻿using Contracts;
 using Entities;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,16 +18,14 @@ namespace Repository
         {
         }
 
-        public void CreateMetData(MetData metData) => Create(metData);
-
-        public IEnumerable<MetData> GetAllData(bool trackChanges) =>
-             FindAll(trackChanges)
-             .OrderBy(c => c.domain_meteosiId)
-             .ToList();
-
-        public MetData GetData(string title, bool trackChanges) => FindByCondition(c => (c.domain_title.Contains(title.ToUpper().Trim())), trackChanges).OrderBy(q => q.Id).Last();
-
         public void CreateBulk(List<MetData> metData) => CreatBulk(metData);
+
+        public async Task<MetData> GetMetDataAsync(int id, bool trackChanges) => await FindByCondition(c => c.Id == id, trackChanges).SingleOrDefaultAsync();
+        public async Task<IEnumerable<MetData>> GetAllMetDataAsync(bool trackChanges) => await FindAll(trackChanges).OrderBy(c => c.domain_title).ToListAsync();
+
+
         
+
+
     }
 }

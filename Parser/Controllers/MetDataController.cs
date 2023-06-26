@@ -16,32 +16,42 @@ namespace Parser.Controllers
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
 
-        public MetDataController(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
+        public  MetDataController(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
         }
         [HttpGet]
-        public IActionResult GetAllMetData()
+        public async Task<IActionResult> GetAllMetData(string? search = "")
         {
-
-            var companies = _repository.MetData.GetAllData(trackChanges: false);
-            var companiesDto = _mapper.Map<IEnumerable<MetDataDTO>>(companies);
-
             
-            return Ok(companiesDto);
+            if (search == "")
+            {
+                var companies = await _repository.MetData.GetAllMetDataAsync(trackChanges: false);
+                var companiesDto = _mapper.Map<IEnumerable<MetDataDTO>>(companies);
+                return Ok(companiesDto);
+            }
+            else
+            {
+                var companies_s = await _repository.MetData.GetAllMetDataAsync(trackChanges: false);
+                var company = companies_s.Where(x => x.domain_title.Contains(search.ToUpper())).OrderBy(t => t.Id).Last();
+                var companyDto = _mapper.Map<MetDataDTO>(company);
+                return Ok(companyDto);
+
+            }
+            
 
 
         }
 
-        [HttpGet("{title}")]
-        public IActionResult GetMetData(string title)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetMetData(int id)
         {
-            var company = _repository.MetData.GetData(title, trackChanges: false);
+            var company = await _repository.MetData.GetMetDataAsync(id, trackChanges: false);
             if (company == null)
             {
-                _logger.LogInfo($"Company with id: {title} doesn't exist in the database.");
+                _logger.LogInfo($"Company with id: {id} doesn't exist in the database.");
                 return NotFound();
             }
             else
