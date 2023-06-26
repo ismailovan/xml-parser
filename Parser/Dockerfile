@@ -8,9 +8,13 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Parser.csproj", "."]
+COPY ["src/Repository/Repository.csproj", "src/Repository/"]
+COPY ["src/Contracts/Contracts.csproj", "src/Contracts/"]
+COPY ["src/Entities/Entities.csproj", "src/Entities/"]
+COPY ["src/LoggerService/LoggerService.csproj", "src/LoggerService/"] 
 RUN dotnet restore "./Parser.csproj"
 COPY . .
-WORKDIR "/src/."
+
 RUN dotnet build "Parser.csproj" -c Release -o /app/build
 
 FROM build AS publish
@@ -20,4 +24,3 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Parser.dll"]
-
